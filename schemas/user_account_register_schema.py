@@ -9,6 +9,7 @@ class UserAccountRegisterSchema(UserAccountSchema):
     username: str = Field(..., max_length=50, min_length=3)
     birthday: str = Field(...)
     picture: Optional[str] = None
+    rol: Optional[str] = None
 
     class Config:
         schema_extra = {

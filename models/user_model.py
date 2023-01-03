@@ -13,3 +13,4 @@ class UserModel(Base):
     picture = Column(String(500))
     email = Column(String(100))
     password = Column(String(300))
+    rol = Column(String(20))

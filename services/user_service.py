@@ -1,3 +1,4 @@
+from bcrypt import hashpw, gensalt, checkpw
 from models.user_model import UserModel
 from schemas.user_account_register_schema import UserAccountRegisterSchema
 from schemas.user_account_schema import UserAccountSchema
@@ -16,15 +17,17 @@ class UserService:
         ).first()
 
     def validate_user_credentials(self, account: UserAccountSchema):
-        return self.db.query(UserModel).filter(
-            (UserModel.email == account.email) & (UserModel.password == account.password)
-        ).first()
+        user = self.db.query(UserModel).filter(UserModel.email == account.email).first()
+
+        return checkpw(account.password.encode(), user.password.encode())
 
     def create_user(self, user: UserAccountRegisterSchema):
-        try:
-            new_movie = UserModel(**user.dict())
 
-            self.db.add(new_movie)
+        try:
+            new_user = UserModel(**user.dict())
+            new_user.password = hashpw(user.password.encode(), gensalt())
+
+            self.db.add(new_user)
             self.db.commit()
 
             return True

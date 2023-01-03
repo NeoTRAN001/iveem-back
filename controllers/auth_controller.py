@@ -7,6 +7,7 @@ from config.database import Session
 from schemas.jwt_schema import JWTSchema
 from schemas.user_account_schema import UserAccountSchema
 from schemas.user_account_register_schema import UserAccountRegisterSchema
+from schemas.user_jwt_schema import UserJWTSchema
 
 from services.user_service import UserService
 
@@ -44,6 +45,7 @@ def sign_in(account: UserAccountSchema = Body(...)):
 def sign_up(account: UserAccountRegisterSchema = Body(...)):
 
     user_service = UserService(Session())
+    account.rol = "user"
 
     if user_service.get_user_by_email_or_username(account.email, account.username):
         return JSONResponse(status_code=status.HTTP_409_CONFLICT, content={"message": "Email or Username already exists"})
@@ -51,6 +53,7 @@ def sign_up(account: UserAccountRegisterSchema = Body(...)):
     if not user_service.create_user(account):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to register account")
 
-    jwt_schema = JWTSchema(token=create_token(account.dict()))
+    user_jwt: UserJWTSchema = UserJWTSchema(username=account.username, rol=account.rol)
+    jwt_schema = JWTSchema(token=create_token(user_jwt.dict()))
 
     return JSONResponse(status_code=status.HTTP_200_OK, content=jsonable_encoder(jwt_schema))
