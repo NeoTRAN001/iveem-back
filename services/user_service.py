@@ -16,10 +16,21 @@ class UserService:
             (UserModel.email == email) | (UserModel.username == username)
         ).first()
 
-    def validate_user_credentials(self, account: UserAccountSchema):
+    def validate_email_password_credentials(self, account: UserAccountSchema) -> bool:
         user = self.db.query(UserModel).filter(UserModel.email == account.email).first()
 
         return checkpw(account.password.encode(), user.password.encode())
+
+    def validate_user_credentials(self, account: UserAccountSchema):
+        user = self.db.query(UserModel).filter(UserModel.email == account.email).first()
+
+        if not checkpw(account.password.encode(), user.password.encode()):
+            return None
+
+        return user
+
+
+
 
     def create_user(self, user: UserAccountRegisterSchema):
 

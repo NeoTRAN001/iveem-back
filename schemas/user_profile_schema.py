@@ -1,9 +1,9 @@
-from pydantic import Field
+from pydantic import Field, EmailStr, BaseModel
 from typing import Optional
-from schemas.user_account_schema import UserAccountSchema
 
 
-class UserAccountRegisterSchema(UserAccountSchema):
+class UserProfileSchema(BaseModel):
+    email: EmailStr = Field(...)
     name: str = Field(..., max_length=50, min_length=3)
     lastname: str = Field(..., max_length=50, min_length=3)
     username: str = Field(..., max_length=50, min_length=3)
@@ -15,7 +15,6 @@ class UserAccountRegisterSchema(UserAccountSchema):
         schema_extra = {
             "example": {
                 "email": "account@email.com",
-                "password": "123456789",
                 "name": "name",
                 "username": "username",
                 "lastname": "lastname",

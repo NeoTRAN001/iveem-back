@@ -25,11 +25,12 @@ router = APIRouter()
     description="This path receives a UserAccount object with the email and password, if everything is correct it returns a JWT token."
 )
 def sign_in(account: UserAccountSchema = Body(...)):
+    user = UserService(Session()).validate_user_credentials(account)
 
-    if not UserService(Session()).validate_user_credentials(account):
+    if not user:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"message": "The email or the password are incorrect"})
 
-    jwt_schema = JWTSchema(token=create_token(account.dict()))
+    jwt_schema = JWTSchema(token=create_token({'email': user.email, 'rol': user.rol}))
 
     return JSONResponse(status_code=status.HTTP_200_OK, content=jsonable_encoder(jwt_schema))
 

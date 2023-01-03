@@ -2,9 +2,9 @@ import uvicorn
 
 from config.framework import app, app_config
 from config.database import db_config
-from controllers import auth_controller
+from controllers import auth_controller, user_controller
 
-routes_controller = [auth_controller]
+routes_controller = [auth_controller, user_controller]
 
 
 if __name__ == "__main__":
