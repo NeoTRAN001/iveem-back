@@ -5,7 +5,7 @@ app = FastAPI()
 
 
 def app_config(controllers):
-    app.title = 'Iveem Backend'
+    app.title = 'Kusikwa Backend'
     app.version = '0.0.1'
 
     app.add_middleware(ErrorHandler)
